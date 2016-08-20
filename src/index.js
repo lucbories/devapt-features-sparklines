@@ -1,0 +1,3 @@
+import SparklinesRenderingPlugin from './sparklines_rendering_plugin'
+
+export default SparklinesRenderingPlugin
