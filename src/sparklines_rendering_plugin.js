@@ -1,13 +1,14 @@
-
+// NPM IMPORTS
 import T from 'typr'
 import assert from 'assert'
 import path from 'path'
-
 import Devapt from 'devapt'
 
 const RenderingPlugin = Devapt.RenderingPlugin
 
-import Sparklines from './plugin/sparklines'
+// PLUGIN IMPORTS
+import SparklinesComponent from './components/sparklines'
+import sparklines_rf from './rendering_functions/sparklines'
 
 
 const plugin_name = 'Sparklines' 
@@ -24,9 +25,9 @@ export default class SparklinesPlugin extends RenderingPlugin
 	 * 
      * @returns {nothing}
      */
-	constructor(arg_manager)
+	constructor(arg_runtime, arg_manager)
 	{
-		super(arg_manager, plugin_name, '1.0.0')
+		super(arg_runtime, arg_manager, plugin_name, '1.0.0')
 		
 		const base_dir = __dirname + '/../node_modules/sparklines/source'
 		this.add_public_asset('js', '/' + plugin_name + '/sparklines.js', path.join(base_dir, 'sparkline.js') )
@@ -67,7 +68,7 @@ export default class SparklinesPlugin extends RenderingPlugin
 		switch(arg_class_name)
 		{
 			case 'Sparkline':
-			case 'Sparklines': return new Sparklines(arg_name, arg_settings, arg_state)
+			case 'Sparklines': return new SparklinesComponent(arg_name, arg_settings, arg_state)
 		}
 		
 		assert(false, context + ':create:bad class name')
@@ -91,7 +92,7 @@ export default class SparklinesPlugin extends RenderingPlugin
 		switch(arg_class_name)
 		{
 			case 'Sparkline':
-			case 'Sparklines':   return Sparklines
+			case 'Sparklines':   return SparklinesComponent
 		}
 		
 		assert(false, context + ':get_class:bad class name')
@@ -117,5 +118,37 @@ export default class SparklinesPlugin extends RenderingPlugin
 		}
 		
 		return false
+	}
+
+
+	
+	/**
+	 * Find a rendering function.
+	 * 
+	 * @param {string} arg_type - rendering item type.
+	 * 
+	 * @returns {Function} - rendering function.
+	 */
+	static find_rendering_function(arg_type)
+	{
+		// console.log(context + ':find_rendering_function:type=' + arg_type)
+
+		if ( ! T.isString(arg_type) )
+		{
+			console.warn(context + ':find_rendering_function:bad type=' + arg_type, T.isString(arg_type), typeof arg_type, arg_type)
+			return undefined
+		}
+		
+		
+		switch(arg_type.toLocaleLowerCase())
+		{
+			// RENDERING FUNCTIONS
+			case 'sparklines':
+				// console.log(context + ':find_rendering_function:found type=' + arg_type)
+				return sparklines_rf
+		}
+
+		// console.log(tabs, context + ':find_rendering_function:not found type=' + arg_type.toLocaleLowerCase())
+		return undefined
 	}
 }
