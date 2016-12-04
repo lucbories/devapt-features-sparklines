@@ -51,11 +51,16 @@ gulp.task('build_all_js',
 )
 
 gulp.task('watch_all_js',
-	(/*callback*/) => {
-		var watcher_public_js = gulp.watch(SRC_ALL_JS, ['build_all_js'])
-		watcher_public_js.on('change',
-			(event) => {
-				console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
+	() => {
+		gulp.watch(SRC_ALL_JS, ['build_all_js'])
+		.on('change',
+			(path, stats) => {
+				console.log('File ' + path + ' was changed, running watch_all_js...')
+			}
+		)
+		.on('unlink',
+			(path, stats) => {
+				console.log('File ' + path + ' was deleted, running watch_all_js...')
 			}
 		)
 	}
@@ -89,6 +94,7 @@ gulp.task('build_browser',
 			.pipe( sourcemaps.write('.') )
 			.pipe( gulp.dest(DST) )
 			// .pipe( plugins.livereload() )
+
 		return stream
 	}
 )
@@ -104,6 +110,6 @@ gulp.task('build_browser',
 /*
 	DEFINE MAIN GULP TASKS
 */
-gulp.task('default', ['build_all_js'/*, 'build_browser'*/])
+gulp.task('default', gulp.series('build_all_js'))
 
-gulp.task('watch', ['build_all_js', 'watch_all_js'])
+gulp.task('watch', gulp.series('build_all_js', 'watch_all_js') )
