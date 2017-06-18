@@ -1,10 +1,11 @@
+
 // NPM IMPORTS
-import T from 'typr'
 import assert from 'assert'
 import path from 'path'
-import Devapt from 'devapt'
 
-const RenderingPlugin = Devapt.RenderingPlugin
+// DEVAPT CORE COMMON IMPORTS
+import T               from 'devapt-core-common/dist/js/utils/types'
+import RenderingPlugin from 'devapt-core-common/dist/js/plugins/rendering_plugin'
 
 // PLUGIN IMPORTS
 import SparklinesComponent from './components/sparklines'
@@ -31,6 +32,21 @@ export default class SparklinesPlugin extends RenderingPlugin
 		
 		const base_dir = __dirname + '/../node_modules/sparklines/source'
 		this.add_public_asset('js', '/' + plugin_name + '/sparklines.js', path.join(base_dir, 'sparkline.js') )
+
+		const dist_dir = __dirname + '/../dist'
+		this.add_public_asset('js', '/' + plugin_name + '/devapt-features-sparklines.js', path.join(dist_dir, 'devapt-features-sparklines.js') )
+	}
+
+
+
+	/**
+	 * Get plugin js asset files for browser loading.
+	 * 
+	 * @returns {string}
+	 */
+	get_browser_plugin_file_url()
+	{
+		return plugin_name + '/devapt-features-sparklines.js'
 	}
 	
 	
@@ -89,13 +105,12 @@ export default class SparklinesPlugin extends RenderingPlugin
 	{
 		assert( T.isString(arg_class_name), context + ':get_class:bad class string')
 		
-		switch(arg_class_name)
+		switch(arg_class_name.toLocaleLowerCase())
 		{
-			case 'Sparkline':
-			case 'Sparklines':   return SparklinesComponent
+			case 'sparkline':
+			case 'sparklines':   return SparklinesComponent
 		}
 		
-		assert(false, context + ':get_class:bad class name')
 		return undefined
 	}
 	
@@ -110,10 +125,10 @@ export default class SparklinesPlugin extends RenderingPlugin
 	 */
 	has(arg_class_name)
 	{
-		switch(arg_class_name)
+		switch(arg_class_name.toLocaleLowerCase())
 		{
-			case 'Sparkline':
-			case 'Sparklines':
+			case 'sparkline':
+			case 'sparklines':
 				return true
 		}
 		

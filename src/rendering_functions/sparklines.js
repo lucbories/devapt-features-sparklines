@@ -1,15 +1,13 @@
+
 // NPM IMPORTS
-import T from 'typr'
-import assert from 'assert'
-// import _ from 'lodash'
 import h from 'virtual-dom/h'
-import Devapt from 'devapt'
 
-// COMMON IMPORTS
-const DefaultRenderingPlugin = Devapt.DefaultRenderingPlugin
+// DEVAPT CORE COMMON IMPORTS
+// import T                  from 'devapt-core-common/dist/js/utils/types'
+import DefaultRenderingPlugin from 'devapt-core-common/dist/js/default_plugins/rendering_default_plugin'
+
+
 const rendering_normalize = DefaultRenderingPlugin.find_rendering_function('rendering_normalize')
-
-
 const plugin_name = 'Sparklines' 
 const context = plugin_name + '/sparklines'
 
@@ -45,8 +43,9 @@ export default (arg_settings={}, arg_state={}, arg_rendering_context, arg_render
 	// const rendering_factory = rendering_context ? rendering_context.rendering_factory : undefined
 	
 	// BUILD TAG
+	const canvas = h('canvas')
 	const tag_id = settings.id
-	const tag_children = undefined
+	const tag_children = [canvas]
 	const tag_props = { id:tag_id, style:settings.style, className:(settings.class ? settings.class  + ' sparkline' : 'sparkline') }
 	const tag = h('span', tag_props, tag_children)
 	
